@@ -41,8 +41,6 @@ class Slider {
         this.activeSlide = 0; 
         
         
-        
-        
         this.sliderLine.style = `
         position: relative;
         height: ${this.height}px;
@@ -65,6 +63,25 @@ class Slider {
             }
         };
         
+        
+        if (options.autoplay === true) {
+            let interval = setInterval(() => {
+               this.move(this.next) 
+            }, this.interval);
+            
+            this.slider.addEventListener("mouseenter", () => {
+                clearInterval(interval)
+            })
+            
+            this.slider.addEventListener("mouseleave", () =>{
+                interval = setInterval(() => {
+                    this.move(this.next) 
+                 }, this.interval);
+            })
+        }
+        
+        
+        
         this.prev.addEventListener("click", () =>{
             this.move(this.prev);
         });
@@ -74,6 +91,15 @@ class Slider {
     }
     
     move(btn){
+        this.prev.disabled = true;
+        this.next.disabled = true;
+        
+        setTimeout(() => {
+            
+        this.prev.disabled = false;
+        this.next.disabled = false;
+        
+        }, this.moveTime + 100);
         let btnPrexOrNext = btn == this.prev ? this.moveSize : this.moveSize * -1 ;
         for (let i = 0; i < this.slides.length; i++) {
             const slide = this.slides[i];
@@ -107,5 +133,6 @@ const slider = new Slider({
     slider: ".slider",
     direction: "X",
     runTime: 1000,
-    interval: 3000
+    interval: 3000,
+    autoplay: true
 });
